@@ -3,7 +3,6 @@
 
 #include <QSqlRecord>
 #include <QSqlDatabase>
-#include <QSqlField>
 #include <QSqlError>
 #include <QMessageBox>
 #include <QHeaderView>
@@ -26,7 +25,8 @@ void TableViewer::loadData(const QString &tableName)
 {
     QSqlQuery query;
     if (!query.exec("SELECT * FROM " + tableName)) {
-        QMessageBox::critical(this, "Ошибка", query.lastError().text());
+        QMessageBox::critical(this, "Ошибка", "Возникла ошибка!");
+        qDebug()<<"Возникла ошибка при выводе таблицы: "<<query.lastError().text();
         return;
     }
 
@@ -48,10 +48,6 @@ void TableViewer::loadData(const QString &tableName)
                 query.isNull(col) ? "NULL" : query.value(col).toString()
             );
 
-            if (query.record().field(col).type() == QVariant::Int ||
-                query.record().field(col).type() == QVariant::Double) {
-                item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-            }
 
             ui->tableWidget->setItem(row, col, item);
         }
